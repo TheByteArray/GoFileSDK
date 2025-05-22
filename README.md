@@ -282,7 +282,7 @@ lifecycleScope.launch {
 
 ##### Java Example
 ```java
-new CoroutineScope(Dispatchers.Main).launch(() -> {
+executor.execute(() -> {
     try {
         UpdateContentResponse response = sdk.updateContent(
             "your_content_id",
@@ -293,7 +293,6 @@ new CoroutineScope(Dispatchers.Main).launch(() -> {
     } catch (Exception e) {
         System.out.println("Failed to update content: " + e.getMessage());
     }
-    return Unit.INSTANCE;
 });
 ```
 
@@ -330,7 +329,7 @@ lifecycleScope.launch {
 
 ##### Java Example
 ```java
-new CoroutineScope(Dispatchers.Main).launch(() -> {
+executor.execute(() -> {
     try {
         List<String> sourceIps = Collections.singletonList("192.168.1.1");
         List<String> domains = Collections.singletonList("example.com");
@@ -349,7 +348,6 @@ new CoroutineScope(Dispatchers.Main).launch(() -> {
     } catch (Exception e) {
         System.out.println("Failed to create direct link: " + e.getMessage());
     }
-    return Unit.INSTANCE;
 });
 ```
 
@@ -393,45 +391,3 @@ This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENS
 For SDK-related queries, please:
 - Open an issue on our [GitHub repository](https://github.com/TheByteArray/GoFileSDK/issues)
 - Contact us at contact@thebytearray.org
-
-## About The Byte Array
-
-The Byte Array is a software development company specializing in creating high-quality, professional SDKs and libraries for the Android platform. Visit our [website](https://thebytearray.com) to learn more about our services.
-
-## Regional Upload Proxies
-
-The SDK supports all Gofile regional upload proxies. You can specify a different upload URL when initializing the SDK:
-
-### Kotlin
-```kotlin
-val sdk = GofileSDK.getInstance(
-    uploadBaseUrl = "https://upload-eu-par.gofile.io/" // Europe (Paris)
-)
-```
-
-### Java
-```java
-GofileSDK sdk = GofileSDK.getInstance(
-    "your_api_token",
-    "https://upload-eu-par.gofile.io/" // Europe (Paris)
-);
-```
-
-Available regional proxies:
-- `https://upload.gofile.io/` (Automatic - nearest)
-- `https://upload-eu-par.gofile.io/` (Europe - Paris)
-- `https://upload-na-phx.gofile.io/` (North America - Phoenix)
-- `https://upload-ap-sgp.gofile.io/` (Asia-Pacific - Singapore)
-- `https://upload-ap-hkg.gofile.io/` (Asia-Pacific - Hong Kong)
-- `https://upload-ap-tyo.gofile.io/` (Asia-Pacific - Tokyo)
-- `https://upload-sa-sao.gofile.io/` (South America - São Paulo)
-
-## License
-
-This SDK is provided under the MIT License. See the LICENSE file for details.
-
-## Support
-
-For support, please contact:
-- Email: support@gofile.io
-- API Documentation: https://gofile.io/api 
