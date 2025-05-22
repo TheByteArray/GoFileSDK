@@ -101,18 +101,23 @@ lifecycleScope.launch {
 // Initialize the SDK with your API token
 GofileSDK sdk = GofileSDK.getInstance("your_api_token");
 
+// Create an executor service
+ExecutorService executor = Executors.newSingleThreadExecutor();
+
 // Upload a file
-new CoroutineScope(Dispatchers.Main).launch(() -> {
-    File file = new File("path/to/your/file.txt");
+executor.execute(() -> {
     try {
+        File file = new File("path/to/your/file.txt");
         UploadResponse response = sdk.uploadFile(file).getOrThrow();
         System.out.println("File uploaded successfully!");
         System.out.println("Download page: " + response.getData().getDownloadPage());
     } catch (Exception e) {
         System.out.println("Upload failed: " + e.getMessage());
     }
-    return Unit.INSTANCE;
 });
+
+// Don't forget to shutdown the executor when done
+executor.shutdown();
 ```
 
 ## API Documentation
@@ -141,6 +146,9 @@ GofileSDK sdk = GofileSDK.getInstance(
     "your_api_token",
     "https://store1.gofile.io/"
 );
+
+// Create an executor service
+ExecutorService executor = Executors.newSingleThreadExecutor();
 ```
 
 ### File Operations
@@ -168,9 +176,9 @@ lifecycleScope.launch {
 
 ##### Java Example
 ```java
-new CoroutineScope(Dispatchers.Main).launch(() -> {
-    File file = new File("path/to/your/file.txt");
+executor.execute(() -> {
     try {
+        File file = new File("path/to/your/file.txt");
         UploadResponse response = sdk.uploadFile(file, "optional_folder_id").getOrThrow();
         System.out.println("File uploaded successfully!");
         System.out.println("Download page: " + response.getData().getDownloadPage());
@@ -178,7 +186,6 @@ new CoroutineScope(Dispatchers.Main).launch(() -> {
     } catch (Exception e) {
         System.out.println("Upload failed: " + e.getMessage());
     }
-    return Unit.INSTANCE;
 });
 ```
 
@@ -202,14 +209,13 @@ lifecycleScope.launch {
 
 ##### Java Example
 ```java
-new CoroutineScope(Dispatchers.Main).launch(() -> {
+executor.execute(() -> {
     try {
         String server = sdk.getBestServer().getOrThrow();
         System.out.println("Best server for upload: " + server);
     } catch (Exception e) {
         System.out.println("Failed to get best server: " + e.getMessage());
     }
-    return Unit.INSTANCE;
 });
 ```
 
@@ -237,7 +243,7 @@ lifecycleScope.launch {
 
 ##### Java Example
 ```java
-new CoroutineScope(Dispatchers.Main).launch(() -> {
+executor.execute(() -> {
     try {
         CreateFolderResponse response = sdk.createFolder("parent_folder_id", "New Folder").getOrThrow();
         System.out.println("Folder created successfully!");
@@ -245,7 +251,6 @@ new CoroutineScope(Dispatchers.Main).launch(() -> {
     } catch (Exception e) {
         System.out.println("Failed to create folder: " + e.getMessage());
     }
-    return Unit.INSTANCE;
 });
 ```
 
