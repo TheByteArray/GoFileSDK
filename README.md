@@ -46,14 +46,14 @@ dependencyResolutionManagement {
 #### Groovy (build.gradle)
 ```gradle
 dependencies {
-    implementation 'com.github.TheByteArray:GoFileSDK:1.0.0'
+    implementation 'com.github.TheByteArray:GoFileSDK:0.0.1'
 }
 ```
 
 #### Kotlin DSL (build.gradle.kts)
 ```kotlin
 dependencies {
-    implementation("com.github.TheByteArray:GoFileSDK:1.0.0")
+    implementation("com.github.TheByteArray:GoFileSDK:0.0.1")
 }
 ```
 
