@@ -6,8 +6,26 @@ import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.thebytearray.gofilesdk.api.GofileApi
-import org.thebytearray.gofilesdk.models.requests.*
-import org.thebytearray.gofilesdk.models.responses.*
+import org.thebytearray.gofilesdk.models.AccountDetailsResponse
+import org.thebytearray.gofilesdk.models.CopyContentRequest
+import org.thebytearray.gofilesdk.models.CopyContentResponse
+import org.thebytearray.gofilesdk.models.CreateDirectLinkRequest
+import org.thebytearray.gofilesdk.models.CreateFolderRequest
+import org.thebytearray.gofilesdk.models.CreateFolderResponse
+import org.thebytearray.gofilesdk.models.DeleteContentRequest
+import org.thebytearray.gofilesdk.models.DeleteContentResponse
+import org.thebytearray.gofilesdk.models.DeleteDirectLinkResponse
+import org.thebytearray.gofilesdk.models.DirectLinkResponse
+import org.thebytearray.gofilesdk.models.FolderDetailsResponse
+import org.thebytearray.gofilesdk.models.ImportContentRequest
+import org.thebytearray.gofilesdk.models.ImportContentResponse
+import org.thebytearray.gofilesdk.models.MoveContentRequest
+import org.thebytearray.gofilesdk.models.MoveContentResponse
+import org.thebytearray.gofilesdk.models.SearchResponse
+import org.thebytearray.gofilesdk.models.UpdateContentRequest
+import org.thebytearray.gofilesdk.models.UpdateContentResponse
+import org.thebytearray.gofilesdk.models.UpdateDirectLinkRequest
+import org.thebytearray.gofilesdk.models.UploadResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.File
@@ -201,18 +219,18 @@ class GofileSDK private constructor(
     /**
      * Creates a direct link.
      * @param contentId The ID of the content
-     * @param expireTime Optional expiration time in seconds
+     * @param expireTime Optional expiration time in milliseconds
      * @param sourceIpsAllowed Optional list of allowed source IPs
      * @param domainsAllowed Optional list of allowed domains
-     * @param auth Optional authentication settings
+     * @param auth Optional list of authentication credentials
      * @return A [Result] containing the direct link response or an error
      */
     suspend fun createDirectLink(
         contentId: String,
-        expireTime: Int? = null,
+        expireTime: Long? = null,
         sourceIpsAllowed: List<String>? = null,
         domainsAllowed: List<String>? = null,
-        auth: Map<String, String>? = null
+        auth: List<String>? = null
     ): Result<DirectLinkResponse> = runCatching {
         val request = CreateDirectLinkRequest(expireTime, sourceIpsAllowed, domainsAllowed, auth)
         val response = api.createDirectLink(contentId, request)
@@ -227,19 +245,19 @@ class GofileSDK private constructor(
      * Updates a direct link.
      * @param contentId The ID of the content
      * @param directLinkId The ID of the direct link
-     * @param expireTime Optional expiration time in seconds
+     * @param expireTime Optional expiration time in milliseconds
      * @param sourceIpsAllowed Optional list of allowed source IPs
      * @param domainsAllowed Optional list of allowed domains
-     * @param auth Optional authentication settings
+     * @param auth Optional list of authentication credentials
      * @return A [Result] containing the updated direct link response or an error
      */
     suspend fun updateDirectLink(
         contentId: String,
         directLinkId: String,
-        expireTime: Int? = null,
+        expireTime: Long? = null,
         sourceIpsAllowed: List<String>? = null,
         domainsAllowed: List<String>? = null,
-        auth: Map<String, String>? = null
+        auth: List<String>? = null
     ): Result<DirectLinkResponse> = runCatching {
         val request = UpdateDirectLinkRequest(expireTime, sourceIpsAllowed, domainsAllowed, auth)
         val response = api.updateDirectLink(contentId, directLinkId, request)
@@ -328,7 +346,7 @@ class GofileSDK private constructor(
     suspend fun getAccountId(): Result<String> = runCatching {
         val response = api.getAccountId()
         if (response.isSuccessful) {
-            response.body()?.data?.id ?: throw Exception("Account ID is null")
+            response.body()?.data ?: throw Exception("Account ID is null")
         } else {
             throw Exception("Get account ID failed: ${response.code()}")
         }
@@ -356,7 +374,7 @@ class GofileSDK private constructor(
     suspend fun resetAuthToken(accountId: String): Result<String> = runCatching {
         val response = api.resetAuthToken(accountId)
         if (response.isSuccessful) {
-            response.body()?.data?.token ?: throw Exception("New token is null")
+            response.body()?.data ?: throw Exception("New token is null")
         } else {
             throw Exception("Reset token failed: ${response.code()}")
         }

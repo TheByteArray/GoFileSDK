@@ -1,8 +1,29 @@
 package org.thebytearray.gofilesdk.api
 
 import okhttp3.MultipartBody
-import org.thebytearray.gofilesdk.models.requests.*
-import org.thebytearray.gofilesdk.models.responses.*
+import org.thebytearray.gofilesdk.models.AccountDetailsResponse
+import org.thebytearray.gofilesdk.models.AccountIdResponse
+import org.thebytearray.gofilesdk.models.CopyContentRequest
+import org.thebytearray.gofilesdk.models.CopyContentResponse
+import org.thebytearray.gofilesdk.models.CreateDirectLinkRequest
+import org.thebytearray.gofilesdk.models.CreateFolderRequest
+import org.thebytearray.gofilesdk.models.CreateFolderResponse
+import org.thebytearray.gofilesdk.models.DeleteContentRequest
+import org.thebytearray.gofilesdk.models.DeleteContentResponse
+import org.thebytearray.gofilesdk.models.DeleteDirectLinkResponse
+import org.thebytearray.gofilesdk.models.DirectLinkResponse
+import org.thebytearray.gofilesdk.models.FolderDetailsResponse
+import org.thebytearray.gofilesdk.models.ImportContentRequest
+import org.thebytearray.gofilesdk.models.ImportContentResponse
+import org.thebytearray.gofilesdk.models.MoveContentRequest
+import org.thebytearray.gofilesdk.models.MoveContentResponse
+import org.thebytearray.gofilesdk.models.ResetTokenResponse
+import org.thebytearray.gofilesdk.models.SearchResponse
+import org.thebytearray.gofilesdk.models.ServerResponse
+import org.thebytearray.gofilesdk.models.UpdateContentRequest
+import org.thebytearray.gofilesdk.models.UpdateContentResponse
+import org.thebytearray.gofilesdk.models.UpdateDirectLinkRequest
+import org.thebytearray.gofilesdk.models.UploadResponse
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -177,7 +198,7 @@ interface GofileApi {
      * @param accountId The ID of the account
      * @return A [Response] containing the new token
      */
-    @POST("accounts/{accountId}/resettoken")
+    @POST("accounts/{accountId}/resetToken")
     suspend fun resetAuthToken(
         @Path("accountId") accountId: String
     ): Response<ResetTokenResponse>

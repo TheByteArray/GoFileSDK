@@ -15,11 +15,13 @@ A professional Android SDK for interacting with the Gofile API, developed by The
 - Singleton pattern for easy access
 - Comprehensive documentation
 - Regional proxy support
+- Full Kotlin and Java support
 
 ## Installation
 
-Add the JitPack repository to your project's `settings.gradle`:
+### Add JitPack Repository
 
+#### Groovy (settings.gradle)
 ```gradle
 dependencyResolutionManagement {
     repositories {
@@ -29,16 +31,67 @@ dependencyResolutionManagement {
 }
 ```
 
-Add the dependency to your app's `build.gradle`:
+#### Kotlin DSL (settings.gradle.kts)
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        // ... other repositories
+        maven { url = uri("https://jitpack.io") }
+    }
+}
+```
 
+### Add Dependency
+
+#### Groovy (build.gradle)
 ```gradle
 dependencies {
     implementation 'com.github.TheByteArray:GoFileSDK:1.0.0'
 }
 ```
 
+#### Kotlin DSL (build.gradle.kts)
+```kotlin
+dependencies {
+    implementation("com.github.TheByteArray:GoFileSDK:1.0.0")
+}
+```
+
+### Add Required Dependencies
+
+#### Groovy (build.gradle)
+```gradle
+dependencies {
+    // Gofile SDK
+    implementation 'com.github.TheByteArray:GoFileSDK:1.0.0'
+    
+    // Required dependencies
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
+    implementation 'com.google.code.gson:gson:2.10.1'
+}
+```
+
+#### Kotlin DSL (build.gradle.kts)
+```kotlin
+dependencies {
+    // Gofile SDK
+    implementation("com.github.TheByteArray:GoFileSDK:1.0.0")
+    
+    // Required dependencies
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    implementation("com.google.code.gson:gson:2.10.1")
+}
+```
+
 ## Quick Start
 
+### Kotlin
 ```kotlin
 // Initialize the SDK with your API token
 val sdk = GofileSDK.getInstance(apiToken = "your_api_token")
@@ -57,10 +110,30 @@ lifecycleScope.launch {
 }
 ```
 
+### Java
+```java
+// Initialize the SDK with your API token
+GofileSDK sdk = GofileSDK.getInstance("your_api_token");
+
+// Upload a file
+new CoroutineScope(Dispatchers.Main).launch(() -> {
+    File file = new File("path/to/your/file.txt");
+    try {
+        UploadResponse response = sdk.uploadFile(file).getOrThrow();
+        System.out.println("File uploaded successfully!");
+        System.out.println("Download page: " + response.getData().getDownloadPage());
+    } catch (Exception e) {
+        System.out.println("Upload failed: " + e.getMessage());
+    }
+    return Unit.INSTANCE;
+});
+```
+
 ## API Documentation
 
 ### Authentication
 
+#### Kotlin
 ```kotlin
 // Initialize with API token
 val sdk = GofileSDK.getInstance(apiToken = "your_api_token")
@@ -72,6 +145,18 @@ val sdk = GofileSDK.getInstance(
 )
 ```
 
+#### Java
+```java
+// Initialize with API token
+GofileSDK sdk = GofileSDK.getInstance("your_api_token");
+
+// Initialize with custom upload server
+GofileSDK sdk = GofileSDK.getInstance(
+    "your_api_token",
+    "https://store1.gofile.io/"
+);
+```
+
 ### File Operations
 
 #### Upload File
@@ -79,7 +164,7 @@ val sdk = GofileSDK.getInstance(
 suspend fun uploadFile(file: File, folderId: String? = null): Result<UploadResponse>
 ```
 
-Example:
+##### Kotlin Example
 ```kotlin
 lifecycleScope.launch {
     val file = File("path/to/your/file.txt")
@@ -95,12 +180,28 @@ lifecycleScope.launch {
 }
 ```
 
+##### Java Example
+```java
+new CoroutineScope(Dispatchers.Main).launch(() -> {
+    File file = new File("path/to/your/file.txt");
+    try {
+        UploadResponse response = sdk.uploadFile(file, "optional_folder_id").getOrThrow();
+        System.out.println("File uploaded successfully!");
+        System.out.println("Download page: " + response.getData().getDownloadPage());
+        System.out.println("File ID: " + response.getData().getFileId());
+    } catch (Exception e) {
+        System.out.println("Upload failed: " + e.getMessage());
+    }
+    return Unit.INSTANCE;
+});
+```
+
 #### Get Best Server
 ```kotlin
 suspend fun getBestServer(): Result<String>
 ```
 
-Example:
+##### Kotlin Example
 ```kotlin
 lifecycleScope.launch {
     sdk.getBestServer()
@@ -113,6 +214,19 @@ lifecycleScope.launch {
 }
 ```
 
+##### Java Example
+```java
+new CoroutineScope(Dispatchers.Main).launch(() -> {
+    try {
+        String server = sdk.getBestServer().getOrThrow();
+        System.out.println("Best server for upload: " + server);
+    } catch (Exception e) {
+        System.out.println("Failed to get best server: " + e.getMessage());
+    }
+    return Unit.INSTANCE;
+});
+```
+
 ### Folder Operations
 
 #### Create Folder
@@ -120,7 +234,7 @@ lifecycleScope.launch {
 suspend fun createFolder(parentFolderId: String, folderName: String): Result<CreateFolderResponse>
 ```
 
-Example:
+##### Kotlin Example
 ```kotlin
 lifecycleScope.launch {
     sdk.createFolder(
@@ -135,23 +249,18 @@ lifecycleScope.launch {
 }
 ```
 
-#### Get Folder Details
-```kotlin
-suspend fun getFolderDetails(folderId: String, password: String? = null): Result<FolderDetailsResponse>
-```
-
-Example:
-```kotlin
-lifecycleScope.launch {
-    sdk.getFolderDetails(folderId = "your_folder_id")
-        .onSuccess { response ->
-            println("Folder name: ${response.data.name}")
-            println("Contents: ${response.data.contents}")
-        }
-        .onFailure { error ->
-            println("Failed to get folder details: ${error.message}")
-        }
-}
+##### Java Example
+```java
+new CoroutineScope(Dispatchers.Main).launch(() -> {
+    try {
+        CreateFolderResponse response = sdk.createFolder("parent_folder_id", "New Folder").getOrThrow();
+        System.out.println("Folder created successfully!");
+        System.out.println("Folder ID: " + response.getData().getId());
+    } catch (Exception e) {
+        System.out.println("Failed to create folder: " + e.getMessage());
+    }
+    return Unit.INSTANCE;
+});
 ```
 
 ### Content Management
@@ -165,7 +274,7 @@ suspend fun updateContent(
 ): Result<UpdateContentResponse>
 ```
 
-Example:
+##### Kotlin Example
 ```kotlin
 lifecycleScope.launch {
     sdk.updateContent(
@@ -180,22 +289,21 @@ lifecycleScope.launch {
 }
 ```
 
-#### Delete Content
-```kotlin
-suspend fun deleteContent(contentsId: String): Result<DeleteContentResponse>
-```
-
-Example:
-```kotlin
-lifecycleScope.launch {
-    sdk.deleteContent(contentsId = "your_content_id")
-        .onSuccess { response ->
-            println("Content deleted successfully!")
-        }
-        .onFailure { error ->
-            println("Failed to delete content: ${error.message}")
-        }
-}
+##### Java Example
+```java
+new CoroutineScope(Dispatchers.Main).launch(() -> {
+    try {
+        UpdateContentResponse response = sdk.updateContent(
+            "your_content_id",
+            "name",
+            "New Name"
+        ).getOrThrow();
+        System.out.println("Content updated successfully!");
+    } catch (Exception e) {
+        System.out.println("Failed to update content: " + e.getMessage());
+    }
+    return Unit.INSTANCE;
+});
 ```
 
 ### Direct Links
@@ -211,7 +319,7 @@ suspend fun createDirectLink(
 ): Result<DirectLinkResponse>
 ```
 
-Example:
+##### Kotlin Example
 ```kotlin
 lifecycleScope.launch {
     sdk.createDirectLink(
@@ -229,49 +337,34 @@ lifecycleScope.launch {
 }
 ```
 
-### Account Management
-
-#### Get Account ID
-```kotlin
-suspend fun getAccountId(): Result<String>
-```
-
-Example:
-```kotlin
-lifecycleScope.launch {
-    sdk.getAccountId()
-        .onSuccess { accountId ->
-            println("Account ID: $accountId")
-        }
-        .onFailure { error ->
-            println("Failed to get account ID: ${error.message}")
-        }
-}
-```
-
-#### Get Account Details
-```kotlin
-suspend fun getAccountDetails(accountId: String): Result<AccountDetailsResponse>
-```
-
-Example:
-```kotlin
-lifecycleScope.launch {
-    sdk.getAccountDetails(accountId = "your_account_id")
-        .onSuccess { response ->
-            println("Account email: ${response.data.email}")
-            println("Account tier: ${response.data.tier}")
-        }
-        .onFailure { error ->
-            println("Failed to get account details: ${error.message}")
-        }
-}
+##### Java Example
+```java
+new CoroutineScope(Dispatchers.Main).launch(() -> {
+    try {
+        List<String> sourceIps = Collections.singletonList("192.168.1.1");
+        List<String> domains = Collections.singletonList("example.com");
+        Map<String, String> auth = Collections.singletonMap("username", "password");
+        
+        DirectLinkResponse response = sdk.createDirectLink(
+            "your_content_id",
+            3600, // 1 hour
+            sourceIps,
+            domains,
+            auth
+        ).getOrThrow();
+        
+        System.out.println("Direct link created successfully!");
+        System.out.println("Link: " + response.getData().getUrl());
+    } catch (Exception e) {
+        System.out.println("Failed to create direct link: " + e.getMessage());
+    }
+    return Unit.INSTANCE;
+});
 ```
 
 ## Error Handling
 
-All SDK methods return a Kotlin `Result` type, which provides a clean way to handle both success and error cases:
-
+### Kotlin
 ```kotlin
 sdk.uploadFile(file)
     .onSuccess { response ->
@@ -280,6 +373,16 @@ sdk.uploadFile(file)
     .onFailure { error ->
         // Handle error
     }
+```
+
+### Java
+```java
+try {
+    UploadResponse response = sdk.uploadFile(file).getOrThrow();
+    // Handle success
+} catch (Exception e) {
+    // Handle error
+}
 ```
 
 ## Requirements
@@ -308,10 +411,19 @@ The Byte Array is a software development company specializing in creating high-q
 
 The SDK supports all Gofile regional upload proxies. You can specify a different upload URL when initializing the SDK:
 
+### Kotlin
 ```kotlin
 val sdk = GofileSDK.getInstance(
     uploadBaseUrl = "https://upload-eu-par.gofile.io/" // Europe (Paris)
 )
+```
+
+### Java
+```java
+GofileSDK sdk = GofileSDK.getInstance(
+    "your_api_token",
+    "https://upload-eu-par.gofile.io/" // Europe (Paris)
+);
 ```
 
 Available regional proxies:
